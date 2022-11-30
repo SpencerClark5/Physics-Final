@@ -16,9 +16,6 @@ class PhysicsObject:
         angle: float = 0,
         avel: float = 0,
         momi: float = math.inf,
-        isMeteor : bool = False,
-        isBomb : bool = False,
-        isBullet : bool = False,
         contact_type: str = "None",
     ):
         self.pos = Vector2(pos)
@@ -27,9 +24,6 @@ class PhysicsObject:
         self.angle = angle
         self.avel = avel
         self.momi = momi
-        self.isMeteor = isMeteor
-        self.isBomb = isBomb
-        self.isBullet = isBullet
         self.contact_type = contact_type
         self.clear_force()
 
@@ -249,14 +243,3 @@ class UniformPolygon(Polygon):
         )
 
 
-# rect = UniformPolygon(
-#     window=None,
-#     density=0.003,
-#     local_points=[[0, 0], [100, 0], [100, 50], [0, 50]],
-#     pos=(400, 300),
-# )
-
-# print()
-# print(f"{rect.mass = }, {rect.momi = }")
-# print(rect.points)
-# print()

@@ -27,6 +27,17 @@ clock = pygame.time.Clock()
 #variables
 objects = []
 
+#create boards
+
+#left board
+#draws clock wise
+leftBoardTop = Polygon(window,local_points=[[0,0],[25,-25],[50,0],[25,25]],pos=Vector2(300,720),mass=math.inf,color=Vector3(255,0,0))
+objects.append(leftBoardTop)
+
+#right board
+leftBoardBottom = leftBoardTop = Polygon(window,local_points=[[0,0],[250,-250],[275,-225],[25,25]],pos=Vector2(400,500),mass=math.inf,color=Vector3(255,0,0))
+objects.append(leftBoardBottom)
+
 
 #game loop
 running = True
