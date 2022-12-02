@@ -31,12 +31,17 @@ objects = []
 
 #left board
 #draws clock wise
-leftBoardTop = Polygon(window,local_points=[[0,0],[25,-25],[50,0],[25,25]],pos=Vector2(300,720),mass=math.inf,color=Vector3(255,0,0))
+leftBoardTop = Polygon(window,local_points=[[0,0],[80,28],[96,0],[32/2,-28]],pos=Vector2(210,725),mass=math.inf,color=Vector3(255,0,0))
 objects.append(leftBoardTop)
 
-#right board
-leftBoardBottom = leftBoardTop = Polygon(window,local_points=[[0,0],[250,-250],[275,-225],[25,25]],pos=Vector2(400,500),mass=math.inf,color=Vector3(255,0,0))
+leftBoardBottom = Polygon(window,local_points=[[0,0],[150,53],[165,28],[32/2,-28]],pos=Vector2(360,780),mass=math.inf,color=Vector3(255,0,0))
 objects.append(leftBoardBottom)
+
+
+#
+#right board
+rightBoardTop = Polygon(window,local_points=[[0,0],[80,28],[96,0],[16,-28]],pos=Vector2(500,725),mass=math.inf,color=Vector3(255,0,0))
+objects.append(rightBoardTop)
 
 
 #game loop
