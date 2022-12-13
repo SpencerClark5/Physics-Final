@@ -10,6 +10,7 @@ from physics_objects import *
 from contact import *
 from sqlalchemy import null
 from beanbag import *
+from functions import *
 
 #clear terminal before you run
 os.system("cls||clear")
