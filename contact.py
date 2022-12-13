@@ -1,49 +1,40 @@
-import math
-
 from pygame.math import Vector2
-
-from physics_objects import Circle, PhysicsObject, Polygon, Wall
-
+import math
 
 # Returns a new contact object of the correct subtype
 # This function has been done for you.
-def generate(a: PhysicsObject, b: PhysicsObject, **kwargs):
+def generate(a, b, **kwargs):
     # Check if a's type comes later than b's alphabetically.
-    # We will label our collision types in alphabetical order,
+    # We will label our collision types in alphabetical order, 
     # so the lower one needs to go first.
     if b.contact_type < a.contact_type:
         a, b = b, a
     # This calls the class of the appropriate name based on the two contact types.
     return globals()[f"{a.contact_type}_{b.contact_type}"](a, b, **kwargs)
-
+    
 
 # Generic contact class, to be overridden by specific scenarios
-class Contact:
-    def __init__(self, a, b, resolve=False, **kwargs):
+class Contact():
+    def __init__(self, a, b, canJump=False, resolve=False, **kwargs):
         self.a = a
         self.b = b
+        self.canJump = canJump
         self.kwargs = kwargs
+        self.score = 0
         self.update()
-        self.resolved = False
-
         if resolve:
             self.resolve(update=False)
 
+    def point(self):
+        return self.circle.pos - self.circle.radius*self.normal
+ 
     def update(self):  # virtual function
         self.overlap = 0
         self.normal = Vector2(0, 0)
 
-    def point(self):
-        return Vector2(0, 0)
-
-    def collided(self):
-        return self.resolved
-
-    def resolve(self, restitution=None, update=True):
-        obj_a: PhysicsObject = self.a
-        obj_b: PhysicsObject = self.b
-        # print(f"                     {obj_b.points = }")
-
+    def resolve(self, restitution=None, friction=None, update=True):
+        a = self.a
+        b = self.b
         if update:
             self.update()
 
@@ -53,199 +44,128 @@ class Contact:
             else:
                 restitution = 0
 
+        if friction is None:
+            if "friction" in self.kwargs.keys():
+                friction = self.kwargs["friction"]
+            else:
+                friction = 0
+
         # resolve overlap
-        # print(f"in resolve {self.overlap = }")
         if self.overlap > 0:
+
             self.resolved = True
-            m = 1 / (1 / obj_a.mass + 1 / obj_b.mass)
-            obj_a.delta_pos(m / obj_a.mass * self.overlap * self.normal)
-            obj_b.delta_pos(-m / obj_b.mass * self.overlap * self.normal)
+            m = 1 / (1 / a.mass + 1 / b.mass)
+            a.delta_pos(m / a.mass * self.overlap * self.normal)
+            b.delta_pos(-m / b.mass * self.overlap * self.normal)
 
             # resolve velocity
-            point = self.point()
-            s_ap = (point - obj_a.pos).rotate(90)
-            s_bp = (point - obj_b.pos).rotate(90)
-            v_ap = obj_a.vel + obj_a.avel * s_ap
-            v_bp = obj_b.vel + obj_b.avel * s_bp
-            v = v_ap - v_bp
-            n = self.normal
-            vn = v.dot(n)
+            r_c = Vector2(a.pos - a.radius * self.normal)
+            v_ap = Vector2(a.vel + a.avel * Vector2(r_c - a.pos).rotate(90))
+            v_bp = Vector2(b.vel + b.avel * Vector2(r_c - b.pos).rotate(90))
+            v = Vector2(v_ap - v_bp)
+            vn = v.dot(self.normal)
 
-            if vn < 0:
-                m = 1 / (
-                    1 / obj_a.mass
-                    + 1 / obj_b.mass
-                    + (s_ap * n) ** 2 / obj_a.momi
-                    + (s_bp * n) ** 2 / obj_b.momi
-                )
-                J = -(1 + restitution) * m * vn
+            if Vector2.dot(v, self.normal) < 0:
+                Jn = -(1 + restitution) * m * vn
+                # calc tangent and vel
+                tangent = self.normal.rotate(90)
+                vt = v.dot(tangent)
+                vts = math.copysign(1.0, vt)
+                # calc tangent impulse to make vel 0
+                Jt = -m * vt
+                # check if too stronk
+                if abs(Jt) > friction * Jn:  # if too stronk
+                    # set jt to max
+                    Jt = -vts * friction * Jn
+                else:  # object stick
+                    # prevent creep
+                    disp = vt / vn * self.overlap
+                    a.delta_pos(m / a.mass * disp * tangent)
+                    b.delta_pos(-m / b.mass * disp * tangent)
 
-                impulse = J * n
-                obj_a.impulse(impulse, point)
-                obj_b.impulse(-impulse, point)
+                impulse = Jn * self.normal + Jt * tangent
+                a.impulse(impulse)
+                b.impulse(-impulse) 
+
+
+
+
+class Circle_Polygon(Contact):
+    def __init__(self, a, b, **kwargs):
+        self.circle = a
+        self.polygon = b
+        super().__init__(a, b, **kwargs)
+
+    def update(self):
+        min_overlap = math.inf
+        # loop over all sides, find index of minimum overlap
+        for i, (wall_point, wall_normal) in enumerate(zip(self.polygon.points, self.polygon.normals)):
+            overlap = self.circle.radius + (wall_point - self.circle.pos).dot(wall_normal)
+            # if overlap is less than min overlap
+            if overlap < min_overlap:
+                min_overlap = overlap
+                index = i
+
+        self.overlap = min_overlap
+        self.normal = self.polygon.normals[index]
+
+        if 0 < self.overlap < self.circle.radius:
+            # check if the point is beyond one of the endpoints
+            endpoint1 = self.polygon.points[index]
+            endpoint2 = self.polygon.points[index-1]
+
+            if (self.circle.pos - endpoint1).dot(endpoint1 - endpoint2) > 0:
+                r = self.circle.pos - endpoint1
+                self.overlap = self.circle.radius - r.magnitude()
+                self.normal = r.normalize()
+
+            elif (self.circle.pos - endpoint2).dot(endpoint2 - endpoint1) > 0:
+                r = self.circle.pos - endpoint2
+                self.overlap = self.circle.radius - r.magnitude()
+                self.normal = r.normalize()
+
 
 
 # Contact class for two circles
 class Circle_Circle(Contact):
     def __init__(self, a, b, **kwargs):
-        self.a: Circle = a
-        self.b: Circle = b
+        self.a = a
+        self.b = b
         super().__init__(a, b, **kwargs)
-
-    def point(self):
-        return self.a.pos - self.a.radius * self.normal
 
     def update(self):  # compute the appropriate values
         r = self.a.pos - self.b.pos
         self.overlap = self.a.radius + self.b.radius - r.magnitude()
-        self.normal = Vector2(0, 0)
-        if r.magnitude() != 0:
-            self.normal = r.normalize()
-
-
-# Contact class for Circle and a Polygon
-class Circle_Polygon(Contact):
-    def __init__(self, a, b, **kwargs):
-        self.circle: Circle = a
-        self.polygon: Polygon = b
-        super().__init__(a, b, **kwargs)
-
-    def point(self):
-        return Vector2(self.circle.pos - self.circle.radius * self.normal)
-
-    def update(self):
-        min_overlap = math.inf
-
-        circle: Circle = self.circle
-        polygon: Polygon = self.polygon
-
-        for i, (wall_point, wall_normal) in enumerate(
-            zip(polygon.points, polygon.normals)
-        ):
-            overlap = circle.radius + Vector2(wall_point - circle.pos).dot(wall_normal)
-
-            # if overlap is less than min_overlap
-            if overlap < min_overlap:
-                # update min_overlap
-                min_overlap = overlap
-                # save index
-                index = i
-
-        self.overlap = min_overlap
-        self.normal = polygon.normals[index]
-
-        if 0 < self.overlap < circle.radius:
-            # Check if new point is beyond one of the endpoints
-            endpoint1 = polygon.points[index]
-            endpoint2 = polygon.points[index - 1]
-            # if beyond index
-            if Vector2(circle.pos - endpoint1).dot(endpoint1 - endpoint2) > 0:
-                # set new overlap and normal
-                r = Vector2(circle.pos - endpoint1)
-                self.overlap = circle.radius - r.magnitude()
-                self.normal = r.normalize()
-            # elif beyond index-1
-            elif Vector2(circle.pos - endpoint2).dot(endpoint2 - endpoint1) > 0:
-                # set new overlap and normal
-                r = Vector2(circle.pos - endpoint2)
-                self.overlap = circle.radius - r.magnitude()
-                self.normal = r.normalize()
+        self.normal = r.normalize()
 
 
 # Contact class for Circle and a Wall
+# Circle is before Wall because it comes before it in the alphabet
 class Circle_Wall(Contact):
     def __init__(self, a, b, **kwargs):
-        self.circle: Circle = a
-        self.wall: Wall = b
+        self.circle = a
+        self.wall = b
         super().__init__(a, b, **kwargs)
 
-    def point(self):
-        return Vector2(self.circle.pos - self.circle.radius * self.normal)
 
     def update(self):  # compute the appropriate values
-        r = Vector2(self.wall.pos - self.circle.pos)
-        self.overlap = self.circle.radius + r.dot(self.wall.normal)
+        
+        self.overlap = self.circle.radius + (self.wall.pos - self.circle.pos).dot(self.wall.normal)
         self.normal = self.wall.normal
 
 
-class Polygon_Polygon(Contact):
-    def __init__(self, a: Polygon, b: Polygon, resolve=False, **kwargs):
-        self.a: Polygon = a
-        self.b: Polygon = b
-        super().__init__(a, b, resolve, **kwargs)
-
-    def point(self):
-        return self.pt
-
-    def update(self):
-        poly_a = self.a
-        poly_b = self.b
-
-        # A OVERLAPPING B
-        min_overlap = math.inf
-        for i, point in enumerate(poly_b.points):
-            start = poly_b.points[i - 1].copy()  # start
-            end = point.copy()  # end
-            wall = Wall(window=None, start_point=start, end_point=end, reverse=True)
-            polywall_a: Polygon_Wall = generate(poly_a, wall)
-            if polywall_a.overlap < min_overlap:
-                min_overlap = polywall_a.overlap
-                norm = polywall_a.normal
-                pt = polywall_a.point()
-
-        self.overlap = min_overlap
-        self.normal = norm
-        self.pt = pt
-
-        # B OVERLAPPING A
-        for i, point in enumerate(poly_a.points):
-            start = poly_a.points[i - 1].copy()  # start
-            end = point.copy()  # end
-            wall = Wall(window=None, start_point=start, end_point=end, reverse=True)
-            polywall_b: Polygon_Wall = generate(poly_b, wall)
-            if polywall_b.overlap < min_overlap:
-                min_overlap = polywall_b.overlap
-                norm = polywall_b.normal.rotate(180)
-                pt = polywall_b.point()
-
-        self.overlap = min_overlap
-        self.normal = norm
-        self.pt = pt
-
-
-class Polygon_Wall(Contact):
-    def __init__(self, a, b, resolve=False, **kwargs):
-        self.poly: Polygon = a
-        self.wall: Wall = b
-        super().__init__(a, b, resolve, **kwargs)
-
-    def point(self):
-        return self.poly.points[self.index]
-
-    def update(self):
-        max_overlap = -math.inf
-
-        polygon: Polygon = self.poly
-        wall: Wall = self.wall
-
-        for i, point in enumerate(polygon.points):
-            overlap = Vector2(wall.pos - point).dot(wall.normal)
-            # if overlap is more than max_overlap
-            if overlap > max_overlap:
-                # update min_overlap
-                max_overlap = overlap
-                # save index
-                index = i
-
-        self.overlap = max_overlap
-        self.normal = wall.normal
-        self.index = index
-
-
-# SPECIFICS FOR PROJECT
-
-
-# BORING
+# Empty class for Wall - Wall collisions
+# The intersection of two infinite walls is not interesting, so skip them
 class Wall_Wall(Contact):
     def __init__(self, a, b, **kwargs):
         super().__init__(a, b, **kwargs)
+
+class Polygon_Wall(Contact):
+    def __init__(self,a,b, **kwargs):
+        super().__init__(a,b,**kwargs)
+
+class Polygon_Polygon(Contact):
+    def __init__(self,a,b,**kwargs):
+        super().__init__(a,b,**kwargs)
+
+

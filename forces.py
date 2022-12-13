@@ -8,10 +8,11 @@ class SingleForce:
     def __init__(self, objects_list=[]):
         self.objects_list = objects_list
 
-    def apply(self):
+    def apply(self, grabbed):
         for obj in self.objects_list:
-            force = self.force(obj)
-            obj.add_force(force)
+            if self.objects_list.index(obj) > 0 and self.objects_list.index(obj) != grabbed:
+                force = self.force(obj)
+                obj.add_force(force)
 
     def force(self, obj): # virtual function
         return Vector2(0, 0)
@@ -44,10 +45,11 @@ class PairForce:
 
 
 class BondForce:
-    def __init__(self, window, pairs_list=[]):
+    def __init__(self, window, pairs_list=[], strength=0):
         self.window = window
         # pairs_list has the format [[obj1, obj2], [obj3, obj4], ... ]
         self.pairs_list = pairs_list
+        self.strength = strength
 
     def apply(self, grabbed):
         # Loop over all pairs from the pairs list.
@@ -107,7 +109,7 @@ class SpringForce(BondForce):
         damp = 2
         v = (a.vel - b.vel)
         natLen = a.radius + b.radius
-        springStr = 500
+        springStr = self.strength
         springForce = (-springStr*(rMag - natLen)-(damp*v).dot(rNorm))*rNorm
         return springForce
 

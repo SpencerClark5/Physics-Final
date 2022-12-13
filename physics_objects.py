@@ -16,6 +16,7 @@ class PhysicsObject:
         angle: float = 0,
         avel: float = 0,
         momi: float = math.inf,
+        isBeanbag: bool = False,
         contact_type: str = "None",
     ):
         self.pos = Vector2(pos)
@@ -24,6 +25,7 @@ class PhysicsObject:
         self.angle = angle
         self.avel = avel
         self.momi = momi
+        self.isBeanbag = isBeanbag
         self.contact_type = contact_type
         self.clear_force()
 
