@@ -45,6 +45,7 @@ grabbedObj = null
 mousePosCur = Vector2(pygame.mouse.get_pos())
 mousePosPre = Vector2(pygame.mouse.get_pos())
 mouseVel = Vector2(0,0)
+sideOfSlingshot = 0 #0 means it was released on the left, 1 means the right
 
 #create boards
 #left board
@@ -57,17 +58,17 @@ objects.append(leftBoardBottom)
 #left3PointZone = Polygon(window,local_points=[[0,0],])
 
 #right board
-rightBoardTop = Polygon(window,local_points=[[0,0],[80,-28],[96,0],[32/2,28]],pos=Vector2(1610 -xOffset,722 - yOffset),mass=math.inf,color=Vector3(255,0,0))
+rightBoardTop = Polygon(window,local_points=[[0,0],[32/2,28],[96,0],[80,-28]],pos=Vector2(1610 -xOffset,722 - yOffset),mass=math.inf,color=Vector3(255,0,0))
 objects.append(rightBoardTop)
 fixedObjects.append(True)
-rightBoardBottom = Polygon(window,local_points=[[0,0],[150,-53],[165,-28],[32/2,28]],pos=Vector2(1380 - xOffset,807 - yOffset),mass=math.inf,color=Vector3(255,0,0))
+rightBoardBottom = Polygon(window,local_points=[[0,0],[32/2,28],[165,-28],[150,-53]],pos=Vector2(1380 - xOffset,807 - yOffset),mass=math.inf,color=Vector3(255,0,0))
 objects.append(rightBoardBottom)
 fixedObjects.append(True)
 
 #create floor
 #floor = Wall(window, start_point=Vector2(0,910),end_point=(1920,910),color=Vector3(0,255,0), reverse=True)
-# objects.append(floor)
-# fixedObjects.append(True)
+#objects.append(floor)
+#fixedObjects.append(True)
 
 #create sticks
 leftStick = Polygon(window,local_points=[[0,0], [10,0],[10,105],[0,105]],color=(0,0,0),pos=Vector2(215 + xOffset,730 - yOffset),mass=math.inf)
@@ -78,7 +79,7 @@ nonPhysicsObjects.append(rightStick)
 fixedObjects.append(True)
 
 #slingshot creation
-topCircle = Circle(window, mass=10, pos=(window.get_width()/2, window.get_height()/2), radius=10, vel=Vector2(0,0), color=Vector3(100,100,100), width=2) 
+topCircle = Circle(window, mass=10, pos=Vector2(leftBoardBottom.pos.x - 50, leftBoardBottom.pos.y - 200), radius=10, vel=Vector2(0,0), color=Vector3(100,100,100), width=2) 
 
 #beanbag creation
 beanbag1 = Beanbag(color=Vector3(255,0,0), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle)
@@ -146,6 +147,11 @@ while running:
         if ballGrabbed:
             ballGrabbed = False
             ballLaunched = True
+            if grabbedObj != null:
+                if objects[grabbedObj].pos.x < topCircle.pos.x:
+                    sideOfSlingshot = 0
+                else:
+                    sideOfSlingshot = 1
 
         if grabbedObj == 0:
             objects[grabbedObj].vel = Vector2(0,0)
@@ -159,8 +165,11 @@ while running:
         mousePosPre = mousePosCur
 
     if beanbag1.centralSec != null:
-        if (topCircle.pos - Vector2(beanbag1.centralSec.pos)).magnitude() <= topCircle.radius + beanbag1.centralSec.radius and len(slingshot) > 1:
-            if ballLaunched:
+        if ballLaunched:
+            if sideOfSlingshot == 0 and beanbag1.centralSec.pos.x > topCircle.pos.x:
+                ballLaunched = False
+                slingshot.pop(slingshot.index(beanbag1.centralSec))
+            elif sideOfSlingshot == 1 and beanbag1.centralSec.pos.x < topCircle.pos.x:
                 ballLaunched = False
                 slingshot.pop(slingshot.index(beanbag1.centralSec))
                 
