@@ -56,19 +56,16 @@ sideOfSlingshot = 0 #0 means it was released on the left, 1 means the right
 
 #create boards
 #left board
-leftBoardTop = Polygon(window,local_points=[[0,0],[80,28],[96,0],[32/2,-28]],pos=Vector2(210 +xOffset,727 - yOffset),mass=math.inf,color=Vector3(255,0,0))
-objects.append(leftBoardTop)
-leftBoardBottom = Polygon(window,local_points=[[0,0],[150,53],[165,28],[32/2,-28]],pos=Vector2(360 +xOffset,782 - yOffset),mass=math.inf,color=Vector3(255,0,0))
+leftBoardTop = Polygon(window,local_points=[[0,0],[80,28],[96,0],[16,-28]],pos=Vector2(210 + xOffset, 727 - yOffset), mass=math.inf, color=Vector3(255,0,0))
+objects.append(leftBoardTop )
+leftBoardBottom = Polygon(window,local_points=[[0,0],[150,53],[165,28],[16,-28]],pos=Vector2(360 + xOffset, 782 - yOffset), mass=math.inf, color=Vector3(255,0,0))
 objects.append(leftBoardBottom)
 
-#left board scoring zones
-#left3PointZone = Polygon(window,local_points=[[0,0],])
-
 #right board
-rightBoardTop = Polygon(window,local_points=[[0,0],[32/2,28],[96,0],[80,-28]],pos=Vector2(1610 -xOffset,722 - yOffset),mass=math.inf,color=Vector3(255,0,0))
+rightBoardTop = Polygon(window,local_points=[[0,0],[16,28],[96,0],[80,-28]], pos=Vector2(1610 - xOffset, 722 - yOffset), mass=math.inf, color=Vector3(255,0,0))
 objects.append(rightBoardTop)
 fixedObjects.append(True)
-rightBoardBottom = Polygon(window,local_points=[[0,0],[32/2,28],[165,-28],[150,-53]],pos=Vector2(1380 - xOffset,807 - yOffset),mass=math.inf,color=Vector3(255,0,0))
+rightBoardBottom = Polygon(window,local_points=[[0,0],[16,28],[165,-28],[150,-53]], pos=Vector2(1380 - xOffset, 807 - yOffset), mass=math.inf, color=Vector3(255,0,0))
 objects.append(rightBoardBottom)
 fixedObjects.append(True)
 
@@ -78,10 +75,10 @@ fixedObjects.append(True)
 #fixedObjects.append(True)
 
 #create sticks
-leftStick = Polygon(window,local_points=[[0,0], [10,0],[10,105],[0,105]],color=(0,0,0),pos=Vector2(215 + xOffset,730 - yOffset),mass=math.inf)
+leftStick = Polygon(window,local_points=[[0,0], [10,0],[10,105],[0,105]], color=(0,0,0), pos=Vector2(215 + xOffset, 730 - yOffset), mass=math.inf)
 nonPhysicsObjects.append(leftStick)
 fixedObjects.append(True)
-rightStick = Polygon(window,local_points=[[0,0], [10,0],[10,110],[0,110]],color=(0,0,0),pos=Vector2(1690 + xOffset,725 - yOffset),mass=math.inf)
+rightStick = Polygon(window,local_points=[[0,0], [10,0],[10,110],[0,110]], color=(0,0,0), pos=Vector2(1690 + xOffset, 725 - yOffset), mass=math.inf)
 nonPhysicsObjects.append(rightStick)
 fixedObjects.append(True)
 
