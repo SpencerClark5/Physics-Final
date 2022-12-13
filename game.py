@@ -36,6 +36,11 @@ slingshot = []
 beanbags = []
 xOffset = 0
 yOffset = -75
+LeftScoringZone3Points = [Vector2(200,807), Vector2(200,907), Vector2(500,907)]
+LeftScoringZone1Point = [Vector2(255,725),Vector2(255,772),Vector2(525,825),Vector2(525,884)]
+RightScoringZone3Points = [Vector2(1400,907),Vector2(1400,807),Vector2(1700,907)]
+RightScoringZone1Point = [Vector2(1375,832),Vector2(1700,713),Vector2(1375,882),Vector2(1700,736)]
+
 
 #grab related variables
 ballGrabbed = False
@@ -215,8 +220,6 @@ while running:
     offset = 1200
     for d in nonPhysicsObjects:
         d.draw()
-        pygame.draw.line(window, color=Vector3(0,0,0),start_pos=(225,772),end_pos=(525,884))
-        #pygame.draw.line(window, color=Vector3(0,0,0),start_pos=(200,705),end_pos=(500,705))
 
     for o in objects:
         o.draw()
