@@ -19,9 +19,10 @@ dt = 1/fps
 clock = pygame.time.Clock()
 
 class Beanbag:
-    def __init__(self, color=Vector3(255,255,255), pos=Vector2(0,0), launchOrigin=null):
+    def __init__(self, color=Vector3(255,255,255), pos=Vector2(0,0), vel=Vector2(0,0), launchOrigin=null):
         self.color = color
         self.pos = pos
+        self.vel = vel
         self.launchOrigin = launchOrigin
 
         self.bag = []
@@ -144,4 +145,7 @@ class Beanbag:
                 if (current.pos - Vector2(next.pos)).magnitude() > (current.radius + next.radius):
                     next.pos = current.pos - Vector2((math.cos(nextangle)*((current.radius + next.radius))),(math.sin(nextangle)*((current.radius + next.radius))))
 
+        if self.centralSec != null:
+            self.pos = self.centralSec.pos
+            self.vel = self.centralSec.vel
         
