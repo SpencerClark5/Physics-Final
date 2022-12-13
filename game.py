@@ -40,6 +40,7 @@ yOffset = -75
 #grab related variables
 ballGrabbed = False
 ballLaunched = False
+bagFlying = False
 coeff_of_friction = 0.3
 grabbedObj = null
 mousePosCur = Vector2(pygame.mouse.get_pos())
@@ -85,7 +86,7 @@ topCircle = Circle(window, mass=10, pos=Vector2(leftBoardBottom.pos.x - 50, left
 beanbag1 = Beanbag(color=Vector3(255,0,0), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle)
 
 beanbag1.AddSecsToList(objects)
-beanbag1.AddSecsToList(beanbags)
+
 
 fixedObjects.append(False)
 fixedObjects.append(False)
@@ -130,13 +131,14 @@ while running:
 
 
     if click[0]:
-        for obj in beanbags:
-            if (((obj.pos - Vector2(pygame.mouse.get_pos())).magnitude() <= obj.radius)) and grabbedObj == null:
-                grabbedObj = objects.index(obj)
-                if not ballGrabbed:
-                    ballGrabbed = True
-                break
-            
+        for obj in objects:
+            if fixedObjects[objects.index(obj)] == False:
+                if (((obj.pos - Vector2(pygame.mouse.get_pos())).magnitude() <= obj.radius)) and grabbedObj == null and obj.isBeanbag:
+                    grabbedObj = objects.index(obj)
+                    if not ballGrabbed:
+                        ballGrabbed = True
+                    break
+                
 
         if grabbedObj != null:
             objects[grabbedObj].pos = pygame.mouse.get_pos()
@@ -168,9 +170,11 @@ while running:
         if ballLaunched:
             if sideOfSlingshot == 0 and beanbag1.centralSec.pos.x > topCircle.pos.x:
                 ballLaunched = False
+                bagFlying = True
                 slingshot.pop(slingshot.index(beanbag1.centralSec))
             elif sideOfSlingshot == 1 and beanbag1.centralSec.pos.x < topCircle.pos.x:
                 ballLaunched = False
+                bagFlying =  True
                 slingshot.pop(slingshot.index(beanbag1.centralSec))
                 
 
