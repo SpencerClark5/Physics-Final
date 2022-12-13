@@ -67,9 +67,9 @@ objects.append(rightBoardBottom)
 fixedObjects.append(True)
 
 #create floor
-#floor = Wall(window, start_point=Vector2(0,910),end_point=(1920,910),color=Vector3(0,255,0), reverse=True)
-#objects.append(floor)
-#fixedObjects.append(True)
+floor = Wall(window, start_point=Vector2(1920,910),end_point=Vector2(0,910),color=Vector3(0,255,0), reverse=True)
+objects.append(floor)
+fixedObjects.append(True)
 
 #create sticks
 leftStick = Polygon(window,local_points=[[0,0], [10,0],[10,105],[0,105]],color=(0,0,0),pos=Vector2(215 + xOffset,730 - yOffset),mass=math.inf)
@@ -85,7 +85,9 @@ topCircle = Circle(window, mass=10, pos=Vector2(leftBoardBottom.pos.x - 50, left
 #beanbag creation
 beanbag1 = Beanbag(color=Vector3(255,0,0), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle)
 
+beanbags.append(beanbag1)
 beanbag1.AddSecsToList(objects)
+
 
 
 fixedObjects.append(False)
@@ -166,16 +168,30 @@ while running:
 
         mousePosPre = mousePosCur
 
-    if beanbag1.centralSec != null:
+    if beanbags[len(beanbags)-1].centralSec != null:
         if ballLaunched:
-            if sideOfSlingshot == 0 and beanbag1.centralSec.pos.x > topCircle.pos.x:
+            if sideOfSlingshot == 0 and beanbags[len(beanbags)-1].centralSec.pos.x > topCircle.pos.x:
                 ballLaunched = False
                 bagFlying = True
-                slingshot.pop(slingshot.index(beanbag1.centralSec))
-            elif sideOfSlingshot == 1 and beanbag1.centralSec.pos.x < topCircle.pos.x:
+                slingshot.pop(slingshot.index(beanbags[len(beanbags)-1].centralSec))
+            elif sideOfSlingshot == 1 and beanbags[len(beanbags)-1].centralSec.pos.x < topCircle.pos.x:
                 ballLaunched = False
                 bagFlying =  True
-                slingshot.pop(slingshot.index(beanbag1.centralSec))
+                slingshot.pop(slingshot.index(beanbags[len(beanbags)-1].centralSec))
+
+    if beanbags[len(beanbags)-1].vel.x < 1 and beanbags[len(beanbags)-1].vel.y < 1:
+        if bagFlying:
+            bagFlying = False
+            beanbags.append(Beanbag(color=Vector3(0,0,255), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle))
+            beanbags[len(beanbags)-1].AddSecsToList(objects)
+
+            fixedObjects.append(False)
+            fixedObjects.append(False)
+            fixedObjects.append(False)
+            fixedObjects.append(False)
+
+
+
                 
 
 
@@ -184,7 +200,8 @@ while running:
         o.clear_force()
 
     # collisions
-    beanbag1.UpdateCollisions()
+    for bag in beanbags:
+        bag.UpdateCollisions()
     overlap = False
     contacts: list[Contact] = []
 
@@ -220,7 +237,8 @@ while running:
                 obj.vel += windVector
             obj.update(dt)
     
-    beanbag1.Update(grabbedObj=grabbedObj, objectsList=objects, slingshot=slingshot, ballGrabbed=ballGrabbed)
+    for bag in beanbags:
+        bag.Update(grabbedObj=grabbedObj, objectsList=objects, slingshot=slingshot, ballGrabbed=ballGrabbed)
         
 
     # GRAPHICS
