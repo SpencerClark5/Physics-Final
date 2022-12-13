@@ -10,6 +10,7 @@ from physics_objects import *
 from contact import *
 from sqlalchemy import null
 from beanbag import *
+from functions import *
 
 #clear terminal before you run
 os.system("cls||clear")
@@ -36,6 +37,11 @@ slingshot = []
 beanbags = []
 xOffset = 0
 yOffset = -75
+LeftScoringZone3Points = [Vector2(200,807), Vector2(200,907), Vector2(500,907)]
+LeftScoringZone1Point = [Vector2(255,725),Vector2(255,772),Vector2(525,825),Vector2(525,884)]
+RightScoringZone3Points = [Vector2(1400,907),Vector2(1400,807),Vector2(1700,907)]
+RightScoringZone1Point = [Vector2(1375,832),Vector2(1700,713),Vector2(1375,882),Vector2(1700,736)]
+
 
 #grab related variables
 ballGrabbed = False
@@ -50,19 +56,16 @@ sideOfSlingshot = 0 #0 means it was released on the left, 1 means the right
 
 #create boards
 #left board
-leftBoardTop = Polygon(window,local_points=[[0,0],[80,28],[96,0],[32/2,-28]],pos=Vector2(210 +xOffset,727 - yOffset),mass=math.inf,color=Vector3(255,0,0))
-objects.append(leftBoardTop)
-leftBoardBottom = Polygon(window,local_points=[[0,0],[150,53],[165,28],[32/2,-28]],pos=Vector2(360 +xOffset,782 - yOffset),mass=math.inf,color=Vector3(255,0,0))
+leftBoardTop = Polygon(window,local_points=[[0,0],[80,28],[96,0],[16,-28]],pos=Vector2(210 + xOffset, 727 - yOffset), mass=math.inf, color=Vector3(255,0,0))
+objects.append(leftBoardTop )
+leftBoardBottom = Polygon(window,local_points=[[0,0],[150,53],[165,28],[16,-28]],pos=Vector2(360 + xOffset, 782 - yOffset), mass=math.inf, color=Vector3(255,0,0))
 objects.append(leftBoardBottom)
 
-#left board scoring zones
-#left3PointZone = Polygon(window,local_points=[[0,0],])
-
 #right board
-rightBoardTop = Polygon(window,local_points=[[0,0],[32/2,28],[96,0],[80,-28]],pos=Vector2(1610 -xOffset,722 - yOffset),mass=math.inf,color=Vector3(255,0,0))
+rightBoardTop = Polygon(window,local_points=[[0,0],[16,28],[96,0],[80,-28]], pos=Vector2(1610 - xOffset, 722 - yOffset), mass=math.inf, color=Vector3(255,0,0))
 objects.append(rightBoardTop)
 fixedObjects.append(True)
-rightBoardBottom = Polygon(window,local_points=[[0,0],[32/2,28],[165,-28],[150,-53]],pos=Vector2(1380 - xOffset,807 - yOffset),mass=math.inf,color=Vector3(255,0,0))
+rightBoardBottom = Polygon(window,local_points=[[0,0],[16,28],[165,-28],[150,-53]], pos=Vector2(1380 - xOffset, 807 - yOffset), mass=math.inf, color=Vector3(255,0,0))
 objects.append(rightBoardBottom)
 fixedObjects.append(True)
 
@@ -72,10 +75,10 @@ objects.append(floor)
 fixedObjects.append(True)
 
 #create sticks
-leftStick = Polygon(window,local_points=[[0,0], [10,0],[10,105],[0,105]],color=(0,0,0),pos=Vector2(215 + xOffset,730 - yOffset),mass=math.inf)
+leftStick = Polygon(window,local_points=[[0,0], [10,0],[10,105],[0,105]], color=(0,0,0), pos=Vector2(215 + xOffset, 730 - yOffset), mass=math.inf)
 nonPhysicsObjects.append(leftStick)
 fixedObjects.append(True)
-rightStick = Polygon(window,local_points=[[0,0], [10,0],[10,110],[0,110]],color=(0,0,0),pos=Vector2(1690 + xOffset,725 - yOffset),mass=math.inf)
+rightStick = Polygon(window,local_points=[[0,0], [10,0],[10,110],[0,110]], color=(0,0,0), pos=Vector2(1690 + xOffset, 725 - yOffset), mass=math.inf)
 nonPhysicsObjects.append(rightStick)
 fixedObjects.append(True)
 
@@ -246,8 +249,6 @@ while running:
     offset = 1200
     for d in nonPhysicsObjects:
         d.draw()
-        pygame.draw.line(window, color=Vector3(0,0,0),start_pos=(225,772),end_pos=(525,884))
-        #pygame.draw.line(window, color=Vector3(0,0,0),start_pos=(200,705),end_pos=(500,705))
 
     for o in objects:
         o.draw()
