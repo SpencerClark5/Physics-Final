@@ -40,20 +40,20 @@ def IsInsideThreePointArea(x1, y1, x2, y2, x3, y3, x, y):
 def IsInsideOnePointArea(x1, y1, x2, y2, x3, y3, x4, y4, x, y):
 
     # Calculate area of rectangle ABCD
-    A = (AreaOfTriangle(x1, y1, x2, y2, x3, y3) +
-        AreaOfTriangle(x1, y1, x4, y4, x3, y3))
+    A = (AreaOfTriangle(x1 = x1, y1 = y1, x2 = x2, y2 = y2, x3 = x3, y3= y3) +
+        AreaOfTriangle(x1 = x1, y1= y1, x2 = x4,  y2 =y4, x3=x3, y3=y3))
     
     # Calculate area of triangle PAB
-    A1 = AreaOfTriangle(x, y, x1, y1, x2, y2)
+    A1 = AreaOfTriangle(x1 = x, y1 = y, x2 =x1, y2 = y1, x3= x2, y3= y2)
     
     # Calculate area of triangle PBC
-    A2 = AreaOfTriangle(x, y, x2, y2, x3, y3)
+    A2 = AreaOfTriangle(x1 = x, y1 = y, x2 = x2,y2=  y2, x3= x3, y3=y3)
     
     # Calculate area of triangle PCD
-    A3 = AreaOfTriangle(x, y, x3, y3, x4, y4)
+    A3 = AreaOfTriangle(x1 = x, y1 = y, x2 = x3, y2 = y3, x3=x4, y3=y4)
     
     # Calculate area of triangle PAD
-    A4 = AreaOfTriangle(x, y, x1, y1, x4, y4)
+    A4 = AreaOfTriangle(x1 = x,y1= y, x2 =x1, y2=y1, x3=x4, y3=y4)
     
     # Check if sum of A1, A2, A3
     # and A4 is same as A
