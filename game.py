@@ -50,7 +50,7 @@ round = 1
 ballGrabbed = False
 ballLaunched = False
 bagFlying = False
-coeff_of_friction = 0.3
+coeff_of_friction = 0.6
 grabbedObj = null
 mousePosCur = Vector2(pygame.mouse.get_pos())
 mousePosPre = Vector2(pygame.mouse.get_pos())
@@ -60,9 +60,11 @@ sideOfSlingshot = 0 #0 means it was released on the left, 1 means the right
 #create boards
 #left board
 leftBoardTop = Polygon(window,local_points=[[0,0],[80,28],[96,0],[16,-28]],pos=Vector2(210 + xOffset, 727 - yOffset), mass=math.inf, color=Vector3(255,0,0))
-objects.append(leftBoardTop )
+objects.append(leftBoardTop)
+fixedObjects.append(True)
 leftBoardBottom = Polygon(window,local_points=[[0,0],[150,53],[165,28],[16,-28]],pos=Vector2(360 + xOffset, 782 - yOffset), mass=math.inf, color=Vector3(255,0,0))
 objects.append(leftBoardBottom)
+fixedObjects.append(True)
 
 #right board
 rightBoardTop = Polygon(window,local_points=[[0,0],[16,28],[96,0],[80,-28]], pos=Vector2(1610 - xOffset, 722 - yOffset), mass=math.inf, color=Vector3(255,0,0))
@@ -72,21 +74,22 @@ rightBoardBottom = Polygon(window,local_points=[[0,0],[16,28],[165,-28],[150,-53
 objects.append(rightBoardBottom)
 fixedObjects.append(True)
 
+#create sticks
+leftStick = Polygon(window,local_points=[[0,0], [0,105],[10,105],[10,0]], color=(0,0,0), pos=Vector2(215 + xOffset, 730 - yOffset), mass=math.inf)
+objects.append(leftStick)
+fixedObjects.append(True)
+rightStick = Polygon(window,local_points=[[0,0], [0,110],[10,110],[10,0]], color=(0,0,0), pos=Vector2(1690 + xOffset, 725 - yOffset), mass=math.inf)
+objects.append(rightStick)
+fixedObjects.append(True)
+
 #create floor
 floor = Wall(window, start_point=Vector2(1920,910),end_point=Vector2(0,910),color=Vector3(0,255,0), reverse=True)
 objects.append(floor)
 fixedObjects.append(True)
 
-#create sticks
-leftStick = Polygon(window,local_points=[[0,0], [10,0],[10,105],[0,105]], color=(0,0,0), pos=Vector2(215 + xOffset, 730 - yOffset), mass=math.inf)
-nonPhysicsObjects.append(leftStick)
-fixedObjects.append(True)
-rightStick = Polygon(window,local_points=[[0,0], [10,0],[10,110],[0,110]], color=(0,0,0), pos=Vector2(1690 + xOffset, 725 - yOffset), mass=math.inf)
-nonPhysicsObjects.append(rightStick)
-fixedObjects.append(True)
 
 #slingshot creation
-topCircle = Circle(window, mass=10, pos=Vector2(leftBoardBottom.pos.x + 10, leftBoardBottom.pos.y - 200), radius=10, vel=Vector2(0,0), color=Vector3(100,100,100), width=2) 
+topCircle = Circle(window, mass=10, pos=Vector2(leftBoardBottom.pos.x + 30, leftBoardBottom.pos.y - 200), radius=10, vel=Vector2(0,0), color=Vector3(100,100,100), width=2) 
 objects.append(topCircle)
 fixedObjects.append(True)
 slingshot.append(topCircle)
@@ -101,6 +104,7 @@ fixedObjects.append(False)
 fixedObjects.append(False)
 fixedObjects.append(False)
 fixedObjects.append(False)
+
 
 # SETUP FORCES
 gravity = Gravity(objects_list=objects, acc=(0, 980))
@@ -294,7 +298,7 @@ while running:
                 if round % 2 == 0:
                     topCircle.pos = Vector2(rightBoardBottom.pos.x + 20, rightBoardBottom.pos.y - 200)
                 else:
-                    topCircle.pos = Vector2(leftBoardBottom.pos.x + 10, leftBoardBottom.pos.y - 200)
+                    topCircle.pos = Vector2(leftBoardBottom.pos.x + 30, leftBoardBottom.pos.y - 200)
 
                 
 
