@@ -136,7 +136,6 @@ while running:
         if event.type == pygame.QUIT or event.type == KEYDOWN and event.key == K_ESCAPE:
             running = False
 
-
     #if clicking
     if click[0]:
         for obj in objects:
@@ -147,7 +146,6 @@ while running:
                         ballGrabbed = True
                     break
                 
-
         if grabbedObj != null:
             objects[grabbedObj].pos = pygame.mouse.get_pos()
             objects[grabbedObj].vel = Vector2(0,0)
@@ -194,115 +192,116 @@ while running:
         numOfBlueBagsIn3 = 0
         numOfBlueBagsIn1 = 0
         for beanbag in beanbags:
+
         #if left side
-        #check 3 point zone
-            if IsInsideThreePointArea(LeftScoringZone3Points[0].x, LeftScoringZone3Points[0].y,
-                                    LeftScoringZone3Points[1].x, LeftScoringZone3Points[1].y,
-                                    LeftScoringZone3Points[2].x, LeftScoringZone3Points[2].y,
-                                    beanbag.pos.x, beanbag.pos.y):
-                print("in")
+            if round % 2 == 1:
+            #check 3 point zone
+                if IsInsideThreePointArea(LeftScoringZone3Points[0].x, LeftScoringZone3Points[0].y,
+                                        LeftScoringZone3Points[1].x, LeftScoringZone3Points[1].y,
+                                        LeftScoringZone3Points[2].x, LeftScoringZone3Points[2].y,
+                                        beanbag.pos.x, beanbag.pos.y):
+                    print("in")
 
-                if beanbag.color == Vector3(255,0,0):
-                    numOfRedBagsIn3 += 1
-                if beanbag.color == Vector3(0,0,255):
-                    numOfBlueBagsIn3 += 1
+                    if beanbag.color == Vector3(255,0,0):
+                        numOfRedBagsIn3 += 1
+                    if beanbag.color == Vector3(0,0,255):
+                        numOfBlueBagsIn3 += 1
+            #check 1 point zone
+                if IsInsideOnePointArea(LeftScoringZone1Point[0].x, LeftScoringZone1Point[0].y,
+                                        LeftScoringZone1Point[1].x, LeftScoringZone1Point[1].y,
+                                        LeftScoringZone1Point[2].x, LeftScoringZone1Point[2].y,
+                                        LeftScoringZone1Point[3].x, LeftScoringZone1Point[3].y,
+                                        beanbag.pos.x,
+                                        beanbag.pos.y):
+                    print("in")
+                    if beanbag.color == Vector3(255,0,0):
+                        numOfRedBagsIn1 += 1
+                    if beanbag.color == Vector3(0,0,255):
+                        numOfBlueBagsIn1 += 1
 
-        #check 1 point zone
-            if IsInsideOnePointArea(LeftScoringZone1Point[0].x, LeftScoringZone1Point[0].y,
-                                    LeftScoringZone1Point[1].x, LeftScoringZone1Point[1].y,
-                                    LeftScoringZone1Point[2].x, LeftScoringZone1Point[2].y,
-                                    LeftScoringZone1Point[3].x, LeftScoringZone1Point[3].y,
-                                    beanbag.pos.x,
-                                    beanbag.pos.y):
-                print("in")
-                if beanbag.color == Vector3(255,0,0):
-                    numOfRedBagsIn1 += 1
-                if beanbag.color == Vector3(0,0,255):
-                    numOfBlueBagsIn1 += 1
-
-
-        #else right side
-        #check 3 point zone
-            if IsInsideThreePointArea(RightScoringZone3Points[0].x, RightScoringZone3Points[0].y,
-                                    RightScoringZone3Points[1].x, RightScoringZone3Points[1].y,
-                                    RightScoringZone3Points[2].x, RightScoringZone3Points[2].y,
-                                    beanbag.pos.x, beanbag.pos.y):
-                print("in")
-                if beanbag.color == Vector3(255,0,0):
-                    numOfRedBagsIn3 += 1
-                if beanbag.color == Vector3(0,0,255):
-                    numOfBlueBagsIn3 += 1
-
-
-        #else 
-        #check 1 point zone
-            if IsInsideOnePointArea(RightScoringZone1Point[0].x, RightScoringZone1Point[0].y,
-                                    RightScoringZone1Point[1].x, RightScoringZone1Point[1].y,
-                                    RightScoringZone1Point[2].x, RightScoringZone1Point[2].y,
-                                    RightScoringZone1Point[3].x, RightScoringZone1Point[3].y,
-                                    beanbag.pos.x,
-                                    beanbag.pos.y):
-                print("in")
-                if beanbag.color == Vector3(255,0,0):
-                    numOfRedBagsIn1 += 1
-                if beanbag.color == Vector3(0,0,255):
-                    numOfBlueBagsIn1 += 1
-
-            #testing to see if its on screen
-            if IsInsideOnePointArea(x1=0,y1=0, x2=1920, y2= 0, x3= 0, y3=1080, x4=1920,y4=1080, x= beanbag.pos.x ,y= beanbag.pos.y):
-                print("in")   
-        if bagFlying:
-            bagFlying = False
-            
-            #use the array of beanbags to check if there are any
-            #inside of the scoring zones opposite of slingshot
-
-            if len(beanbags) < 4:
-                if len(beanbags) % 2 == 0:
-                    beanbags.append(Beanbag(color=Vector3(255,0,0), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle))
-                else:
-                    beanbags.append(Beanbag(color=Vector3(0,0,255), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle))
-                beanbags[len(beanbags)-1].AddSecsToList(objects)
-
-                fixedObjects.append(False)
-                fixedObjects.append(False)
-                fixedObjects.append(False)
-                fixedObjects.append(False)
-
-
-
-               
             else:
-                i = 0
-                while i < len(fixedObjects)-1:
-                    if not (fixedObjects[i]):
-                        fixedObjects.pop(i)
-                        i -= 1
-                    i += 1
+            #check 3 point zone
+                if IsInsideThreePointArea(RightScoringZone3Points[0].x, RightScoringZone3Points[0].y,
+                                        RightScoringZone3Points[1].x, RightScoringZone3Points[1].y,
+                                        RightScoringZone3Points[2].x, RightScoringZone3Points[2].y,
+                                        beanbag.pos.x, beanbag.pos.y):
+                    print("in")
+                    if beanbag.color == Vector3(255,0,0):
+                        numOfRedBagsIn3 += 1
+                    if beanbag.color == Vector3(0,0,255):
+                        numOfBlueBagsIn3 += 1
 
-                for bag in beanbags:
-                    bag.RemoveSecsFromList(objects)
-                
-                i = 1
-                end = len(beanbags)
+            #check 1 point zone
+                if IsInsideOnePointArea(RightScoringZone1Point[0].x, RightScoringZone1Point[0].y,
+                                        RightScoringZone1Point[1].x, RightScoringZone1Point[1].y,
+                                        RightScoringZone1Point[2].x, RightScoringZone1Point[2].y,
+                                        RightScoringZone1Point[3].x, RightScoringZone1Point[3].y,
+                                        beanbag.pos.x,
+                                        beanbag.pos.y):
+                    print("in")
+                    if beanbag.color == Vector3(255,0,0):
+                        numOfRedBagsIn1 += 1
+                    if beanbag.color == Vector3(0,0,255):
+                        numOfBlueBagsIn1 += 1
+            if bagFlying:
+                bagFlying = False
 
-                while i <= end:
-                    beanbags.pop(0)
-                    i += 1
+                if len(beanbags) < 4:
+                    if len(beanbags) % 2 == 0:
+                        beanbags.append(Beanbag(color=Vector3(255,0,0), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle))
+                    else:
+                        beanbags.append(Beanbag(color=Vector3(0,0,255), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle))
+                    beanbags[len(beanbags)-1].AddSecsToList(objects)
 
-                beanbags.append(Beanbag(color=Vector3(255,0,0), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle))
-                beanbags[len(beanbags)-1].AddSecsToList(objects)
+                    fixedObjects.append(False)
+                    fixedObjects.append(False)
+                    fixedObjects.append(False)
+                    fixedObjects.append(False)
 
-                fixedObjects.append(False)
-                fixedObjects.append(False)
-                fixedObjects.append(False)
-                fixedObjects.append(False)
-
-                round += 1
-                if round % 2 == 0:
-                    topCircle.pos = Vector2(rightBoardBottom.pos.x + 20, rightBoardBottom.pos.y - 200)
                 else:
-                    topCircle.pos = Vector2(leftBoardBottom.pos.x + 30, leftBoardBottom.pos.y - 200)
+                    i = 0
+                    while i < len(fixedObjects)-1:
+                        if not (fixedObjects[i]):
+                            fixedObjects.pop(i)
+                            i -= 1
+                        i += 1
+
+                    for bag in beanbags:
+                        bag.RemoveSecsFromList(objects)
+                    
+                    i = 1
+                    end = len(beanbags)
+
+                    while i <= end:
+                        beanbags.pop(0)
+                        i += 1
+
+                    beanbags.append(Beanbag(color=Vector3(255,0,0), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle))
+                    beanbags[len(beanbags)-1].AddSecsToList(objects)
+
+                    fixedObjects.append(False)
+                    fixedObjects.append(False)
+                    fixedObjects.append(False)
+                    fixedObjects.append(False)
+
+                    round += 1
+                    if round % 2 == 0:
+                        topCircle.pos = Vector2(rightBoardBottom.pos.x + 20, rightBoardBottom.pos.y - 200)
+                    else:
+                        topCircle.pos = Vector2(leftBoardBottom.pos.x + 30, leftBoardBottom.pos.y - 200)
+
+                    #calculate points
+                    scoringBagsIn1Zone = abs(numOfBlueBagsIn1 - numOfRedBagsIn1)
+                    if (numOfBlueBagsIn1 > numOfRedBagsIn1):
+                        bluePoints += 1 * scoringBagsIn1Zone
+                    if (numOfRedBagsIn1 > numOfBlueBagsIn1):
+                        redPoints += 1 * scoringBagsIn1Zone
+
+                    scoringBagsIn3Zone = abs(numOfBlueBagsIn3 - numOfRedBagsIn3)
+                    if (numOfBlueBagsIn3 > numOfRedBagsIn3):
+                        bluePoints += 1 * scoringBagsIn3Zone
+                    if (numOfRedBagsIn3 > numOfBlueBagsIn3):
+                        redPoints += 1 * scoringBagsIn3Zone
 
                 
 
