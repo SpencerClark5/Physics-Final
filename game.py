@@ -189,11 +189,11 @@ while running:
     #if beanbags are not moving
     if abs(beanbags[len(beanbags)-1].vel.x) < 10 and abs(beanbags[len(beanbags)-1].vel.y) < 10:
         
+        numOfRedBagsIn3 = 0
+        numOfRedBagsIn1 = 0
+        numOfBlueBagsIn3 = 0
+        numOfBlueBagsIn1 = 0
         for beanbag in beanbags:
-            numOfRedBagsIn3 = 0
-            numOfRedBagsIn1 = 0
-            numOfBlueBagsIn3 = 0
-            numOfBlueBagsIn1 = 0
         #if left side
         #check 3 point zone
             if IsInsideThreePointArea(LeftScoringZone3Points[0].x, LeftScoringZone3Points[0].y,
@@ -247,6 +247,10 @@ while running:
                     numOfRedBagsIn1 += 1
                 if beanbag.color == Vector3(0,0,255):
                     numOfBlueBagsIn1 += 1
+
+            #testing to see if its on screen
+            if IsInsideOnePointArea(x1=0,y1=0, x2=1920, y2= 0, x3= 0, y3=1080, x4=1920,y4=1080, x= beanbag.pos.x ,y= beanbag.pos.y):
+                print("in")   
         if bagFlying:
             bagFlying = False
             
