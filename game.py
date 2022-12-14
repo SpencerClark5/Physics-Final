@@ -86,10 +86,8 @@ fixedObjects.append(True)
 topCircle = Circle(window, mass=10, pos=Vector2(leftBoardBottom.pos.x - 50, leftBoardBottom.pos.y - 200), radius=10, vel=Vector2(0,0), color=Vector3(100,100,100), width=2) 
 
 #beanbag creation
-beanbag1 = Beanbag(color=Vector3(255,0,0), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle)
-
-beanbags.append(beanbag1)
-beanbag1.AddSecsToList(objects)
+beanbags.append(Beanbag(color=Vector3(255,0,0), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle))
+beanbags[len(beanbags)-1].AddSecsToList(objects)
 
 
 
@@ -182,16 +180,26 @@ while running:
                 bagFlying =  True
                 slingshot.pop(slingshot.index(beanbags[len(beanbags)-1].centralSec))
 
-    if beanbags[len(beanbags)-1].vel.x < 1 and beanbags[len(beanbags)-1].vel.y < 1:
+    if beanbags[len(beanbags)-1].vel.x < 10 and beanbags[len(beanbags)-1].vel.y < 10:
         if bagFlying:
             bagFlying = False
-            beanbags.append(Beanbag(color=Vector3(0,0,255), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle))
-            beanbags[len(beanbags)-1].AddSecsToList(objects)
 
-            fixedObjects.append(False)
-            fixedObjects.append(False)
-            fixedObjects.append(False)
-            fixedObjects.append(False)
+            if len(beanbags) < 4:
+                if len(beanbags) % 2 == 0:
+                    beanbags.append(Beanbag(color=Vector3(255,0,0), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle))
+                else:
+                    beanbags.append(Beanbag(color=Vector3(0,0,255), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle))
+                beanbags[len(beanbags)-1].AddSecsToList(objects)
+
+                fixedObjects.append(False)
+                fixedObjects.append(False)
+                fixedObjects.append(False)
+                fixedObjects.append(False)
+
+
+
+                                
+
 
 
 

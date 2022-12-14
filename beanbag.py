@@ -47,6 +47,12 @@ class Beanbag:
         list.append(self.sec2)
         list.append(self.sec3)
         list.append(self.sec4)
+    
+    def RemoveSecsFromList(self, list=[]):
+        list.pop(list.index(self.sec1))
+        list.pop(list.index(self.sec2))
+        list.pop(list.index(self.sec3))
+        list.pop(list.index(self.sec4))
 
     def MoveBagTo(self, newPos=Vector2):
         self.sec1.pos = Vector2(newPos)
