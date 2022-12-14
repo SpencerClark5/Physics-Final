@@ -189,7 +189,7 @@ while running:
             
             #use the array of beanbags to check if there are any
             #inside of the scoring zones opposite of slingshot
-            for beanbag in len(beanbags):
+            for beanbag in beanbags:
                 numOfRedBagsIn3 = 0
                 numOfRedBagsIn1 = 0
                 numOfBlueBagsIn3 = 0
@@ -200,6 +200,8 @@ while running:
                                         LeftScoringZone3Points[1].x, LeftScoringZone3Points[1].y,
                                         LeftScoringZone3Points[2].x, LeftScoringZone3Points[2].y,
                                         beanbag.pos.x, beanbag.pos.y):
+                    print("in")
+
                     if beanbag.color == Vector3(255,0,0):
                         numOfRedBagsIn3 += 1
                     if beanbag.color == Vector3(0,0,255):
@@ -212,6 +214,7 @@ while running:
                                         LeftScoringZone1Point[3].x, LeftScoringZone1Point[3].y,
                                         beanbag.pos.x,
                                         beanbag.pos.y):
+                    print("in")
                     if beanbag.color == Vector3(255,0,0):
                         numOfRedBagsIn1 += 1
                     if beanbag.color == Vector3(0,0,255):
@@ -224,6 +227,7 @@ while running:
                                         RightScoringZone3Points[1].x, RightScoringZone3Points[1].y,
                                         RightScoringZone3Points[2].x, RightScoringZone3Points[2].y,
                                         beanbag.pos.x, beanbag.pos.y):
+                    print("in")
                     if beanbag.color == Vector3(255,0,0):
                         numOfRedBagsIn3 += 1
                     if beanbag.color == Vector3(0,0,255):
@@ -238,15 +242,11 @@ while running:
                                         RightScoringZone1Point[3].x, RightScoringZone1Point[3].y,
                                         beanbag.pos.x,
                                         beanbag.pos.y):
+                    print("in")
                     if beanbag.color == Vector3(255,0,0):
                         numOfRedBagsIn1 += 1
                     if beanbag.color == Vector3(0,0,255):
                         numOfBlueBagsIn1 += 1
-
-            print(numOfBlueBagsIn1)
-            print(numOfBlueBagsIn3)
-            print(numOfRedBagsIn1)
-            print(numOfRedBagsIn3)
 
             if len(beanbags) < 4:
                 if len(beanbags) % 2 == 0:
