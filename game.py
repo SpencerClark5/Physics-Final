@@ -43,6 +43,7 @@ RightScoringZone3Points = [Vector2(1400,907),Vector2(1400,807),Vector2(1700,907)
 RightScoringZone1Point = [Vector2(1375,832),Vector2(1700,713),Vector2(1375,882),Vector2(1700,736)]
 redPoints = 0
 bluePoints = 0
+round = 1
 
 
 #grab related variables
@@ -85,7 +86,10 @@ nonPhysicsObjects.append(rightStick)
 fixedObjects.append(True)
 
 #slingshot creation
-topCircle = Circle(window, mass=10, pos=Vector2(leftBoardBottom.pos.x - 50, leftBoardBottom.pos.y - 200), radius=10, vel=Vector2(0,0), color=Vector3(100,100,100), width=2) 
+topCircle = Circle(window, mass=10, pos=Vector2(leftBoardBottom.pos.x + 10, leftBoardBottom.pos.y - 200), radius=10, vel=Vector2(0,0), color=Vector3(100,100,100), width=2) 
+objects.append(topCircle)
+fixedObjects.append(True)
+slingshot.append(topCircle)
 
 #beanbag creation
 beanbags.append(Beanbag(color=Vector3(255,0,0), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle))
@@ -97,11 +101,6 @@ fixedObjects.append(False)
 fixedObjects.append(False)
 fixedObjects.append(False)
 fixedObjects.append(False)
-
-#more slingshot creation
-objects.append(topCircle)
-fixedObjects.append(True)
-slingshot.append(topCircle)
 
 # SETUP FORCES
 gravity = Gravity(objects_list=objects, acc=(0, 980))
@@ -184,7 +183,7 @@ while running:
                 slingshot.pop(slingshot.index(beanbags[len(beanbags)-1].centralSec))
 
     #if beanbags are not moving
-    if beanbags[len(beanbags)-1].vel.x < 10 and beanbags[len(beanbags)-1].vel.y < 10:
+    if abs(beanbags[len(beanbags)-1].vel.x) < 10 and abs(beanbags[len(beanbags)-1].vel.y) < 10:
         if bagFlying:
             bagFlying = False
             
@@ -261,6 +260,41 @@ while running:
                 fixedObjects.append(False)
                 fixedObjects.append(False)
 
+
+
+               
+            else:
+                i = 0
+                while i < len(fixedObjects)-1:
+                    if not (fixedObjects[i]):
+                        fixedObjects.pop(i)
+                        i -= 1
+                    i += 1
+
+                for bag in beanbags:
+                    bag.RemoveSecsFromList(objects)
+                
+                i = 1
+                end = len(beanbags)
+
+                while i <= end:
+                    beanbags.pop(0)
+                    i += 1
+
+                beanbags.append(Beanbag(color=Vector3(255,0,0), pos=Vector2(window.get_width()/2 - 100, 400), launchOrigin=topCircle))
+                beanbags[len(beanbags)-1].AddSecsToList(objects)
+
+                fixedObjects.append(False)
+                fixedObjects.append(False)
+                fixedObjects.append(False)
+                fixedObjects.append(False)
+
+                round += 1
+                if round % 2 == 0:
+                    topCircle.pos = Vector2(rightBoardBottom.pos.x + 20, rightBoardBottom.pos.y - 200)
+                else:
+                    topCircle.pos = Vector2(leftBoardBottom.pos.x + 10, leftBoardBottom.pos.y - 200)
+
                 
 
 
@@ -305,6 +339,7 @@ while running:
             if objects.index(obj) > 0 and objects.index(obj) != grabbedObj:
                 obj.vel += windVector
             obj.update(dt)
+
     
     for bag in beanbags:
         bag.Update(grabbedObj=grabbedObj, objectsList=objects, slingshot=slingshot, ballGrabbed=ballGrabbed)
