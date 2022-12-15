@@ -20,8 +20,7 @@ pygame.init()
 width, height = 1920, 1080
 window = pygame.display.set_mode([width, height])
 
-fontpath = pygame.font.match_font("arial")
-font = pygame.font.SysFont('arial', round(window.get_width()/30))
+Font = pygame.font.SysFont('comicsansms', round(window.get_width()/20))
 
 #timing
 fps = 1000
@@ -100,6 +99,7 @@ fixedObjects.append(True)
 floor = Wall(window, start_point=Vector2(1920,910),end_point=Vector2(0,910),color=Vector3(0,255,0), reverse=True)
 objects.append(floor)
 fixedObjects.append(True)
+
 
 
 #slingshot creation
@@ -376,3 +376,36 @@ while running:
 
     for o in objects:
         o.draw()
+    
+    #UI
+    currentTurn = len(beanbags) % 2
+    curPlayer = 0
+    if currentTurn == 1:
+        curPlayer = "Reds "
+    else:
+        curPlayer = "Blues "
+    text = Font.render(f"{curPlayer} turn", True, (0,255,0))
+    RedText = Font.render(f"{redPoints}", True, (255,0,0))
+    BlueText = Font.render(f"{bluePoints}", True, (0,0,255))
+
+
+    window.blit(text, (((window.get_width()) - text.get_width()) / 2, 200))
+    window.blit(RedText, (((window.get_width()) - RedText.get_width()) / 4, 200))
+    window.blit(BlueText, ((((window.get_width()) - BlueText.get_width()) / 4) * 3, 200))
+
+    if redPoints > 11 :
+        redPoints = 6
+    if bluePoints > 11:
+        bluePoints = 6
+
+    Redwins = Font.render(f"Red wins!", True, (255,0,0))
+    Bluewins = Font.render(f"Blue wins!", True, (0,0,255))
+
+    
+    if redPoints == 11:
+        window.blit(Redwins, (((window.get_width()) - Redwins.get_width()) / 2, (window.get_height() - Redwins.get_height())/2 ))
+
+    if bluePoints == 11:
+        window.blit(Bluewins, (((window.get_width()) - Bluewins.get_width()) / 2, (window.get_height() - Bluewins.get_height())/2 ))
+ 
+
